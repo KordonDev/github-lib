@@ -1,7 +1,14 @@
 "use strict;"
 
 const GITHUB_URL = 'https://api.github.com';
+
 var fetch = require('node-fetch');
+var storage = require('node-persist');
+var storageOptions = {dir: './cache.file'};
+storage.init(storageOptions)
+    .then(() => storage.clear())
+    .then(() => console.log('Cache setup'))
+    .catch((err) => error.log(err));
 var gitHubToken = '';
 
 function setToken(token) {
@@ -9,12 +16,20 @@ function setToken(token) {
 }
 
 function fetchGitHub(url) {
-  return fetch(GITHUB_URL + url, {headers: {'Authorization': 'token ' + gitHubToken}})
-    .then(res => {
-      console.log(res.url);
-      return res;
-    })
-    .then(res => res.json());
+    return storage.getItem(url)
+        .then(value => {
+            if (value) {
+                return value;
+            }
+            return fetch(GITHUB_URL + url, {headers: {'Authorization': 'token ' + gitHubToken}})
+               .then(res => {
+                  console.log('fetched:', res.url);
+                   let json = res.json();
+                   storage.setItem(url, json);
+                  return json;
+                });
+        }
+ );
 }
 
 function fetchUser(login) {
