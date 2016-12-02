@@ -11,7 +11,6 @@ function setToken(token) {
 function fetchGitHub(url) {
   return fetch(GITHUB_URL + url, {headers: {'Authorization': 'token ' + gitHubToken}})
     .then(res => {
-      console.log(res.url);
       return res;
     })
     .then(res => res.json());
