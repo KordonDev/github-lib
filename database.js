@@ -8,7 +8,7 @@ var storageOptions = {dir: './cache.file'};
 storage.init(storageOptions)
     .then(() => storage.clear())
     .then(() => console.log('Cache setup'))
-    .catch((err) => error.log(err));
+    .catch((err) => console.error(err));
 var gitHubToken = '';
 
 function setToken(token) {
