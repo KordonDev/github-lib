@@ -11,6 +11,7 @@ function setToken(token) {
 function fetchGitHub(url) {
   return fetch(GITHUB_URL + url, {headers: {'Authorization': 'token ' + gitHubToken}})
     .then(res => {
+      console.log('Fetched: ' + url);
       return res;
     })
     .then(res => res.json());
@@ -21,11 +22,13 @@ function fetchUser(login) {
 }
 
 function fetchFollower(login) {
-  return fetchGitHub('/users/' + login + '/followers');
+  return fetchGitHub('/users/' + login + '/followers')
+    .then(followers => followers.map(follower => fetchUser(follower.login)));
 }
 
 function fetchFollowing(login) {
-  return fetchGitHub('/users/' + login + '/following');
+  return fetchGitHub('/users/' + login + '/following')
+    .then(followings => followings.map(following => fetchUser(following.login)));
 }
 
 function fetchReposOfUser(login) {

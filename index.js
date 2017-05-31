@@ -1,3 +1,3 @@
 'use strict';
 
-export module = require('database');
+export default require('database');
